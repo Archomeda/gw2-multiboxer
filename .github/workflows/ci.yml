@@ -8,6 +8,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
+        with:
+          submodules: true
       - uses: warrenbuckley/Setup-MSBuild@v1
       - name: Build x86
         run: msbuild /p:Configuration=Release;Platform=x86
