@@ -1,5 +1,5 @@
 # Guild Wars 2 Multiboxer
-[![](https://img.shields.io/github/release/Archomeda/gw2-multiboxer.svg?logo=github&logoColor=f0f0f0)](https://github.com/Archomeda/gw2-multiboxer/releases/latest)
+[![](https://img.shields.io/github/release/Archomeda/gw2-multiboxer.svg?include_prereleases&logo=github&logoColor=f0f0f0)](https://github.com/Archomeda/gw2-multiboxer/releases/latest)
 [![](https://img.shields.io/github/downloads/Archomeda/gw2-multiboxer/total.svg?logo=github&logoColor=f0f0f0)](https://github.com/Archomeda/gw2-multiboxer/releases/latest)
 
 ***Note:** This Guild Wars 2 client modification has **not** been officially approved. Use at your own risk.*
