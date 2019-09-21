@@ -16,7 +16,6 @@ jobs:
         run: |
           msbuild /p:Configuration=Release;Platform=x64
           7z a x64.zip bin/Release/x64
-      - name: 
       - name: Upload x86
         uses: actions/upload-artifact@v1
         with:
