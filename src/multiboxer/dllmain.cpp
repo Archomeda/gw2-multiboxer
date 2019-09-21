@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "minhook.h"
 #include "utils/debug.h"
+#include "utils/string.h"
 
 using namespace std;
 using namespace std::filesystem;
@@ -240,12 +241,55 @@ namespace multiboxer {
     bool Initialize() {
         if (InitializePassthrough() && InitializeMinHook()) {
             int argumentCount = 0;
-            LPWSTR* arguments = CommandLineToArgvW(GetCommandLineW(), &argumentCount);
+            LPWSTR commandLine = GetCommandLineW();
+            LPWSTR* arguments = CommandLineToArgvW(commandLine, &argumentCount);
+            bool hasLocalDatPath = false;
+            bool hasShareArchive = false;
+
             for (int i = 0; i < argumentCount; i++) {
-                if (wstring(arguments[i]) == L"-ldat" && i + 1 < argumentCount) {
+                wstring argument(ToLower(arguments[i]));
+                if ((argument == L"-ldat" || argument == L"/ldat") && i + 1 < argumentCount) {
+                    hasLocalDatPath = true;
                     localDatPath = wstring(arguments[i + 1]);
                 }
+                if (argument == L"-sharearchive" || argument == L"/sharearchive") {
+                    hasShareArchive = true;
+                }
             }
+
+            if (hasLocalDatPath && !hasShareArchive) {
+                int result = MessageBoxTimeoutW(NULL,
+                    L"You're starting Guild Wars 2 with a custom Local.dat filename.\r\n"
+                    L"Do you want to enable -shareArchive for multiboxing support? "
+                    L"This will put restart Guild Wars 2 in read-only mode.\r\n\r\n"
+                    L"This popup will close and assume 'No' within 5 seconds.",
+                    L"GW2 Multiboxer",
+                    MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2, 0, 5000);
+                if (result == IDYES) {
+                    size_t programNameLength = wcslen(arguments[0]);
+                    if (commandLine[0] == L'\"') {
+                        programNameLength += 2;
+                    }
+                    wstring parameters(wstring(commandLine).substr(programNameLength + 1));
+                    parameters.append(L" -shareArchive");
+                    LPWSTR lpParameters = new wchar_t[parameters.size() + 1];
+                    copy(parameters.begin(), parameters.end(), lpParameters);
+                    lpParameters[parameters.size()] = 0;
+
+                    STARTUPINFOW info = { sizeof(info) };
+                    PROCESS_INFORMATION processInfo;
+                    if (!CreateProcessW(arguments[0], lpParameters, NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo)) {
+                        DWORD error = GetLastError();
+                        MessageBoxW(NULL, (wstring(L"Error ") + to_wstring(error) + L" while restarting GW2 client.").c_str(), L"GW2 Multiboxer error", MB_ICONERROR | MB_OK);
+                    }
+                    delete[] lpParameters;
+                    CloseHandle(processInfo.hProcess);
+                    CloseHandle(processInfo.hThread);
+                    ExitProcess(0);
+                }
+            }
+
+            LocalFree(arguments);
             return true;
         }
         return false;

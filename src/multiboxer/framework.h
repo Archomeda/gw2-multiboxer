@@ -1,6 +1,7 @@
 #pragma once
 
 // Standard
+#include <algorithm>
 #include <filesystem>
 #include <sstream>
 
@@ -36,6 +37,8 @@
 #define NOMCX
 #include <windows.h>
 #include <shellapi.h>
+
+extern "C" WINUSERAPI int WINAPI MessageBoxTimeoutW(IN HWND hWnd, IN PCWSTR lpText, IN PCWSTR lpCaption, IN UINT uType, IN WORD wLanguageId, IN DWORD dwMilliseconds);
 
 // Third-party
 #include <MinHook.h>
