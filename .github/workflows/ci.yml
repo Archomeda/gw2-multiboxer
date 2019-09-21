@@ -9,18 +9,18 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Build x86
-        run: |
-          msbuild /p:Configuration=Release;Platform=x86
-          7z a x86.zip bin/Release/x86
+        run: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" /p:Configuration=Release;Platform=x86
       - name: Build x64
-        run: |
-          msbuild /p:Configuration=Release;Platform=x64
-          7z a x64.zip bin/Release/x64
+        run: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" /p:Configuration=Release;Platform=x64
+      - name: Create x86 artifact
+        run: 7z a x86.zip bin/Release/x86
       - name: Upload x86
         uses: actions/upload-artifact@v1
         with:
           name: x86
           path: x86.zip
+      - name: Create x64 artifact
+        run: 7z a x64.zip bin/Release/x64
       - name: Upload x64
         uses: actions/upload-artifact@v1
         with:
