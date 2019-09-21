@@ -123,27 +123,57 @@ namespace multiboxer {
     namespace hooks {
         typedef HANDLE(WINAPI CreateFileA_t)(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
         typedef HANDLE(WINAPI CreateFileW_t)(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
+        typedef HANDLE(WINAPI CreateMutexA_t)(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitiaOwner, LPCSTR lpName);
+        typedef HANDLE(WINAPI CreateMutexW_t)(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitiaOwner, LPCWSTR lpName);
 
         CreateFileA_t* SystemCreateFileA;
         CreateFileW_t* SystemCreateFileW;
+        CreateMutexA_t* SystemCreateMutexA;
+        CreateMutexW_t* SystemCreateMutexW;
 
         HANDLE WINAPI HookCreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) {
-            return SystemCreateFileA(lpFileName, dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
+            string fileName(lpFileName);
+            path filePath(fileName);
+            if (!localDatPath.empty() && filePath.filename() == "Local.dat") {
+                if (localDatPath.is_relative()) {
+                    filePath = filePath.remove_filename() / localDatPath;
+                }
+                else {
+                    filePath = localDatPath;
+                }
+                fileName = filePath.string();
+            }
+            return SystemCreateFileA(fileName.c_str(), dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
         }
 
         HANDLE WINAPI HookCreateFileW(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) {
-            path file(lpFileName);
-            if (!localDatPath.empty() && file.filename() == "Local.dat") {
+            path filePath(lpFileName);
+            if (!localDatPath.empty() && filePath.filename() == "Local.dat") {
                 if (localDatPath.is_relative()) {
-                    file = file.remove_filename() / localDatPath;
+                    filePath = filePath.remove_filename() / localDatPath;
                 }
                 else {
-                    file = localDatPath;
+                    filePath = localDatPath;
                 }
-                MessageBoxW(NULL, (wstring(L"Redirecting \"") + lpFileName + L"\" to \"" + file.wstring() + L"\".").c_str(), L"CreateFileW", MB_OK);
-                lpFileName = file.c_str();
+                lpFileName = filePath.c_str();
             }
             return SystemCreateFileW(lpFileName, dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
+        }
+
+        HANDLE WINAPI HookCreateMutexA(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCSTR lpName) {
+            string name(lpName);
+            if (name.starts_with("AN-Mutex-Window-") || name.starts_with("AN-Mutex-Install-")) {
+                name.append("-" + to_string(GetCurrentProcessId()));
+            }
+            return SystemCreateMutexA(lpMutexAttributes, bInitialOwner, name.c_str());
+        }
+
+        HANDLE WINAPI HookCreateMutexW(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCWSTR lpName) {
+            wstring name(lpName);
+            if (name.starts_with(L"AN-Mutex-Window-") || name.starts_with(L"AN-Mutex-Install-")) {
+                name.append(L"-" + to_wstring(GetCurrentProcessId()));
+            }
+            return SystemCreateMutexW(lpMutexAttributes, bInitialOwner, name.c_str());
         }
     }
 
@@ -191,8 +221,12 @@ namespace multiboxer {
         MH_STATUS mhStatus = MH_OK;
         mhStatus = !mhStatus ? MH_CreateHookEx(&CreateFileA, hooks::HookCreateFileA, &hooks::SystemCreateFileA) : mhStatus;
         mhStatus = !mhStatus ? MH_CreateHookEx(&CreateFileW, hooks::HookCreateFileW, &hooks::SystemCreateFileW) : mhStatus;
+        mhStatus = !mhStatus ? MH_CreateHookEx(&CreateMutexA, hooks::HookCreateMutexA, &hooks::SystemCreateMutexA) : mhStatus;
+        mhStatus = !mhStatus ? MH_CreateHookEx(&CreateMutexW, hooks::HookCreateMutexW, &hooks::SystemCreateMutexW) : mhStatus;
         mhStatus = !mhStatus ? MH_QueueEnableHook(&CreateFileA) : mhStatus;
         mhStatus = !mhStatus ? MH_QueueEnableHook(&CreateFileW) : mhStatus;
+        mhStatus = !mhStatus ? MH_QueueEnableHook(&CreateMutexA) : mhStatus;
+        mhStatus = !mhStatus ? MH_QueueEnableHook(&CreateMutexW) : mhStatus;
         mhStatus = !mhStatus ? MH_ApplyQueued() : mhStatus;
 
         if (mhStatus) {
@@ -227,9 +261,13 @@ namespace multiboxer {
     void ShutdownMinHook() {
         MH_QueueDisableHook(&CreateFileA);
         MH_QueueDisableHook(&CreateFileW);
+        MH_QueueDisableHook(&CreateMutexA);
+        MH_QueueDisableHook(&CreateMutexW);
         MH_ApplyQueued();
         MH_RemoveHook(&CreateFileA);
         MH_RemoveHook(&CreateFileW);
+        MH_RemoveHook(&CreateMutexA);
+        MH_RemoveHook(&CreateMutexW);
         MH_Uninitialize();
     }
 

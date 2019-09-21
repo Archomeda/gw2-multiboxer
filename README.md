@@ -18,6 +18,10 @@ Refer to the [wiki](https://wiki.guildwars2.com/wiki/Command_line_arguments) if 
 
 Please note that adding `-ldat <local_dat_file>` to the *settings.json* file doesn't work.
 
+You can also run multiple Guild Wars 2 instances on the same computer.
+Make sure you're using a unique Local.dat file (with `-ldat`), and you're adding `-shareArchive` to the command line parameters.
+Keep in mind that you cannot update the game this way, and that any changes in the Guild Wars 2 settings do not persist (game limitation).
+When updating is required, make sure you run the client normally.
 
 ## Compiling
 This project uses Visual Studio 2019.
