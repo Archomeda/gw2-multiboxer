@@ -133,6 +133,10 @@ namespace multiboxer {
         CreateMutexW_t* SystemCreateMutexW;
 
         HANDLE WINAPI HookCreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) {
+            if (!lpFileName) {
+                return SystemCreateFileA(lpFileName, dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
+            }
+
             string fileName(lpFileName);
             path filePath(fileName);
             if (!localDatPath.empty() && filePath.filename() == "Local.dat") {
@@ -148,6 +152,10 @@ namespace multiboxer {
         }
 
         HANDLE WINAPI HookCreateFileW(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) {
+            if (!lpFileName) {
+                return SystemCreateFileW(lpFileName, dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
+            }
+
             path filePath(lpFileName);
             if (!localDatPath.empty() && filePath.filename() == "Local.dat") {
                 if (localDatPath.is_relative()) {
@@ -162,6 +170,10 @@ namespace multiboxer {
         }
 
         HANDLE WINAPI HookCreateMutexA(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCSTR lpName) {
+            if (!lpName) {
+                return SystemCreateMutexA(lpMutexAttributes, bInitialOwner, lpName);
+            }
+
             string name(lpName);
             if (name.starts_with("AN-Mutex-Window-") || name.starts_with("AN-Mutex-Install-")) {
                 name.append("-" + to_string(GetCurrentProcessId()));
@@ -170,6 +182,10 @@ namespace multiboxer {
         }
 
         HANDLE WINAPI HookCreateMutexW(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCWSTR lpName) {
+            if (!lpName) {
+                return SystemCreateMutexW(lpMutexAttributes, bInitialOwner, lpName);
+            }
+
             wstring name(lpName);
             if (name.starts_with(L"AN-Mutex-Window-") || name.starts_with(L"AN-Mutex-Install-")) {
                 name.append(L"-" + to_wstring(GetCurrentProcessId()));
