@@ -29,11 +29,15 @@ This project uses Visual Studio 2019.
 All dependencies are included in the project folders.
 Please make sure to `checkout` all git submodules.
 
+Upon building, wxWidgets will be built automatically as well.
+It might take some time when it's running for the first time.
+
 ## Third-party software
 This project uses third-party software.
 Please refer to their GitHub repositories or websites for more information.
 
 - [minhook 1.3.3](https://github.com/TsudaKageyu/minhook)
+- [wxWidgets 3.1.2](https://github.com/wxWidgets/wxWidgets)
 
 ## Disclaimer
 This is an **unofficial** library.

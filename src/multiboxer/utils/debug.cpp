@@ -2,7 +2,7 @@
 
 using namespace std;
 
-namespace multiboxer {
+namespace utils {
 
     bool LaunchDebugger() {
 #ifdef _DEBUG

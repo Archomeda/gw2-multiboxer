@@ -9,19 +9,25 @@ jobs:
     steps:
       - uses: actions/checkout@v1
         with:
-          submodules: true
+          submodules: recursive
       - uses: warrenbuckley/Setup-MSBuild@v1
       - name: Build x86
-        run: msbuild /p:Configuration=Release;Platform=x86
+        run: |
+          msbuild /p:Configuration=Release;Platform=x86
+          mkdir -p out/x86
+          copy bin/x86/Release/*.dll out/x86
       - name: Build x64
-        run: msbuild /p:Configuration=Release;Platform=x64
+        run: |
+          msbuild /p:Configuration=Release;Platform=x64
+          mkdir -p out/x64
+          copy bin/x64/Release/*.dll out/x64
       - name: Upload x86
         uses: actions/upload-artifact@v1
         with:
           name: x86
-          path: bin/x86/Release
+          path: out/x86
       - name: Upload x64
         uses: actions/upload-artifact@v1
         with:
           name: x64
-          path: bin/x64/Release
+          path: out/x64

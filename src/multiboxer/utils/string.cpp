@@ -2,7 +2,7 @@
 
 using namespace std;
 
-namespace multiboxer {
+namespace utils {
 
     string ToLower(string str) {
         transform(str.begin(), str.end(), str.begin(), [](unsigned char c) -> unsigned char { return tolower(c); });

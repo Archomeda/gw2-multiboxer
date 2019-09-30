@@ -1,20 +1,20 @@
 LIBRARY version.dll
 
 EXPORTS
-	GetFileVersionInfoA
-	GetFileVersionInfoByHandle
-	GetFileVersionInfoExA
-	GetFileVersionInfoExW
-	GetFileVersionInfoSizeA
-	GetFileVersionInfoSizeExA
-	GetFileVersionInfoSizeExW
-	GetFileVersionInfoSizeW	
-	GetFileVersionInfoW
-	VerFindFileA
-	VerFindFileW
-	VerInstallFileA
-	VerInstallFileW
-	VerLanguageNameA
-	VerLanguageNameW
-	VerQueryValueA
-	VerQueryValueW
+	GetFileVersionInfoA=WrapperGetFileVersionInfoA @1
+	GetFileVersionInfoByHandle=WrapperGetFileVersionInfoByHandle @2
+	GetFileVersionInfoExA=WrapperGetFileVersionInfoExA @3
+	GetFileVersionInfoExW=WrapperGetFileVersionInfoExW @4
+	GetFileVersionInfoSizeA=WrapperGetFileVersionInfoSizeA @5
+	GetFileVersionInfoSizeExA=WrapperGetFileVersionInfoSizeExA @6
+	GetFileVersionInfoSizeExW=WrapperGetFileVersionInfoSizeExW @7
+	GetFileVersionInfoSizeW	=WrapperGetFileVersionInfoSizeW	 @8
+	GetFileVersionInfoW=WrapperGetFileVersionInfoW @9
+	VerFindFileA=WrapperVerFindFileA @10
+	VerFindFileW=WrapperVerFindFileW @11
+	VerInstallFileA=WrapperVerInstallFileA @12
+	VerInstallFileW=WrapperVerInstallFileW @13
+	VerLanguageNameA=WrapperVerLanguageNameA @14
+	VerLanguageNameW=WrapperVerLanguageNameW @15
+	VerQueryValueA=WrapperVerQueryValueA @16
+	VerQueryValueW=WrapperVerQueryValueW @17

@@ -1,0 +1,54 @@
+.code
+extern mExports:QWORD
+WrapperGetFileVersionInfoA proc
+	jmp mExports[0*8]
+WrapperGetFileVersionInfoA endp
+WrapperGetFileVersionInfoByHandle proc
+	jmp mExports[1*8]
+WrapperGetFileVersionInfoByHandle endp
+WrapperGetFileVersionInfoExA proc
+	jmp mExports[2*8]
+WrapperGetFileVersionInfoExA endp
+WrapperGetFileVersionInfoExW proc
+	jmp mExports[3*8]
+WrapperGetFileVersionInfoExW endp
+WrapperGetFileVersionInfoSizeA proc
+	jmp mExports[4*8]
+WrapperGetFileVersionInfoSizeA endp
+WrapperGetFileVersionInfoSizeExA proc
+	jmp mExports[5*8]
+WrapperGetFileVersionInfoSizeExA endp
+WrapperGetFileVersionInfoSizeExW proc
+	jmp mExports[6*8]
+WrapperGetFileVersionInfoSizeExW endp
+WrapperGetFileVersionInfoSizeW proc
+	jmp mExports[7*8]
+WrapperGetFileVersionInfoSizeW endp
+WrapperGetFileVersionInfoW proc
+	jmp mExports[8*8]
+WrapperGetFileVersionInfoW endp
+WrapperVerFindFileA proc
+	jmp mExports[9*8]
+WrapperVerFindFileA endp
+WrapperVerFindFileW proc
+	jmp mExports[10*8]
+WrapperVerFindFileW endp
+WrapperVerInstallFileA proc
+	jmp mExports[11*8]
+WrapperVerInstallFileA endp
+WrapperVerInstallFileW proc
+	jmp mExports[12*8]
+WrapperVerInstallFileW endp
+WrapperVerLanguageNameA proc
+	jmp mExports[13*8]
+WrapperVerLanguageNameA endp
+WrapperVerLanguageNameW proc
+	jmp mExports[14*8]
+WrapperVerLanguageNameW endp
+WrapperVerQueryValueA proc
+	jmp mExports[15*8]
+WrapperVerQueryValueA endp
+WrapperVerQueryValueW proc
+	jmp mExports[16*8]
+WrapperVerQueryValueW endp
+end

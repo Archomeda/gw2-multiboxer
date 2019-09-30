@@ -1,6 +1,6 @@
 #pragma once
 #include "../pch.h"
 
-namespace multiboxer {
+namespace utils {
     bool LaunchDebugger();
 }

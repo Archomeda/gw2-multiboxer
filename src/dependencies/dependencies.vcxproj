@@ -87,13 +87,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)lib\$(Configuration)\</OutDir>
-    <IntDir>obj\$(PlatformTarget)\$(Configuration)\</IntDir>
-    <TargetName>$(ProjectName).$(PlatformTarget)</TargetName>
-    <IncludePath>$(ProjectDir)minhook\include;$(IncludePath)</IncludePath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)lib\$(Configuration)\</OutDir>
@@ -108,6 +101,13 @@
     <TargetName>$(ProjectName).$(PlatformTarget)</TargetName>
     <IncludePath>$(ProjectDir)minhook\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)lib\$(Configuration)\</OutDir>
+    <IntDir>obj\$(PlatformTarget)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName).$(PlatformTarget)</TargetName>
+    <IncludePath>$(ProjectDir)minhook\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)lib\$(Configuration)\</OutDir>
@@ -115,23 +115,6 @@
     <TargetName>$(ProjectName).$(PlatformTarget)</TargetName>
     <IncludePath>$(ProjectDir)minhook\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;DEPENDENCIES_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableUAC>false</EnableUAC>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -170,6 +153,23 @@
       <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;DEPENDENCIES_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -194,4 +194,49 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <!-- wxWidgets -->
+  <Target Name="AfterBuildD32" AfterTargets="AfterBuild" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Exec Command="
+      cd $(ProjectDir)../wxWidgets/build/msw
+      nmake /f makefile.vc RUNTIME_LIBS=static USE_HTML=0 USE_WEBVIEW=0 USE_MEDIA=0 USE_XRC=0 USE_AUI=0 USE_RIBBON=0 USE_PROPGRID=0 USE_RICHTEXT=0 USE_STC=0 USE_OPENGL=0 USE_QA=0" />
+  </Target>
+  <Target Name="AfterBuildR32" AfterTargets="AfterBuild" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Exec Command="
+      cd $(ProjectDir)../wxWidgets/build/msw
+      nmake /f makefile.vc BUILD=release DEBUG_FLAG=0 RUNTIME_LIBS=static USE_HTML=0 USE_WEBVIEW=0 USE_MEDIA=0 USE_XRC=0 USE_AUI=0 USE_RIBBON=0 USE_PROPGRID=0 USE_RICHTEXT=0 USE_STC=0 USE_OPENGL=0 USE_QA=0" />
+  </Target>
+  <Target Name="AfterBuildD64" AfterTargets="AfterBuild" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Exec Command="
+      cd $(ProjectDir)../wxWidgets/build/msw
+      nmake /f makefile.vc TARGET_CPU=X64 RUNTIME_LIBS=static USE_HTML=0 USE_WEBVIEW=0 USE_MEDIA=0 USE_XRC=0 USE_AUI=0 USE_RIBBON=0 USE_PROPGRID=0 USE_RICHTEXT=0 USE_STC=0 USE_OPENGL=0 USE_QA=0" />
+  </Target>
+  <Target Name="AfterBuildR64" AfterTargets="AfterBuild" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Exec Command="
+      cd $(ProjectDir)../wxWidgets/build/msw
+      nmake /f makefile.vc BUILD=release TARGET_CPU=X64 DEBUG_FLAG=0 RUNTIME_LIBS=static USE_HTML=0 USE_WEBVIEW=0 USE_MEDIA=0 USE_XRC=0 USE_AUI=0 USE_RIBBON=0 USE_PROPGRID=0 USE_RICHTEXT=0 USE_STC=0 USE_OPENGL=0 USE_QA=0" />
+  </Target>
+  <!-- <Target Name="AfterCleanD32" AfterTargets="AfterClean" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Exec Command="
+      cd $(ProjectDir)../wxWidgets/build/msw
+      set _CL_=/MTd
+      nmake /f makefile.vc clean" />
+  </Target>
+  <Target Name="AfterCleanR32" AfterTargets="AfterClean" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Exec Command="
+      cd $(ProjectDir)../wxWidgets/build/msw
+      set _CL_=/MT
+      nmake /f makefile.vc BUILD=release clean" />
+  </Target>
+  <Target Name="AfterCleanD64" AfterTargets="AfterClean" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Exec Command="
+      cd $(ProjectDir)../wxWidgets/build/msw
+      set _CL_=/MTd
+      nmake /f makefile.vc TARGET_CPU=X64 clean" />
+  </Target>
+  <Target Name="AfterCleanR64" AfterTargets="AfterClean" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Exec Command="
+      cd $(ProjectDir)../wxWidgets/build/msw
+      set _CL_=/MT
+      nmake /f makefile.vc BUILD=release TARGET_CPU=X64 clean" />
+  </Target> -->
 </Project>
